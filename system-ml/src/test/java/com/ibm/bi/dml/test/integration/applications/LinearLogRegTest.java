@@ -17,14 +17,12 @@
 
 package com.ibm.bi.dml.test.integration.applications;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
@@ -32,16 +30,14 @@ import com.ibm.bi.dml.test.integration.AutomatedTestBase;
 import com.ibm.bi.dml.test.integration.TestConfiguration;
 import com.ibm.bi.dml.test.utils.TestUtils;
 
-
-@RunWith(value = Parameterized.class)
-public class LinearLogRegTest extends AutomatedTestBase
+public abstract class LinearLogRegTest extends AutomatedTestBase
 {
 	
-    private final static String TEST_DIR = "applications/linearLogReg/";
-    private final static String TEST_LINEAR_LOG_REG = "LinearLogReg";
+    protected final static String TEST_DIR = "applications/linearLogReg/";
+    protected final static String TEST_LINEAR_LOG_REG = "LinearLogReg";
 
-    private int numRecords, numFeatures, numTestRecords;
-    private double sparsity;
+    protected int numRecords, numFeatures, numTestRecords;
+    protected double sparsity;
     
 	public LinearLogRegTest(int numRecords, int numFeatures, int numTestRecords, double sparsity) {
 		this.numRecords = numRecords;
@@ -63,42 +59,49 @@ public class LinearLogRegTest extends AutomatedTestBase
     @Override
     public void setUp()
     {
-    	setUpBase();
     	addTestConfiguration(TEST_LINEAR_LOG_REG, new TestConfiguration(TEST_DIR, TEST_LINEAR_LOG_REG,
                 new String[] { "w" }));
     }
     
-    @Test
-    public void testLinearLogReg() throws ClassNotFoundException, IOException
-    {
+    protected void testLinearLogReg(ScriptType scriptType) {
+		System.out.println("------------ BEGIN " + TEST_LINEAR_LOG_REG + " " + scriptType + " TEST WITH {" + numRecords + ", " + numFeatures
+				+ ", " + numTestRecords + ", " + sparsity + "} ------------");
+		this.scriptType = scriptType;
+    	
     	int rows = numRecords;			// # of rows in the training data 
         int cols = numFeatures;
         int rows_test = numTestRecords; // # of rows in the test data 
-        int cols_test = cols; 			// # of rows in the test data 
+        int cols_test = cols;
 
         TestConfiguration config = getTestConfiguration(TEST_LINEAR_LOG_REG);
         config.addVariable("rows", rows);
         config.addVariable("cols", cols);
         config.addVariable("rows_test", rows_test);
         config.addVariable("cols_test", cols_test);
-        
-		/* This is for running the junit test the new way, i.e., construct the arguments directly */
-		String LLR_HOME = SCRIPT_DIR + TEST_DIR;
-		fullDMLScriptName = LLR_HOME + TEST_LINEAR_LOG_REG + ".dml";
-		programArgs = new String[]{"-stats","-args", LLR_HOME + INPUT_DIR + "X" , 
-				                        Integer.toString(rows), Integer.toString(cols),
-				                         LLR_HOME + INPUT_DIR + "Xt" , 
-				                        Integer.toString(rows_test), Integer.toString(cols_test),
-				                         LLR_HOME + INPUT_DIR + "y" ,
-				                         LLR_HOME + INPUT_DIR + "yt" ,
-				                         LLR_HOME + OUTPUT_DIR + "w" };
-		
-		fullRScriptName = LLR_HOME + TEST_LINEAR_LOG_REG + ".R";
-		rCmd = "Rscript" + " " + fullRScriptName + " " + 
-		       LLR_HOME + INPUT_DIR + " " + LLR_HOME + EXPECTED_DIR;
-      
         loadTestConfiguration(config);
-
+           
+		List<String> proArgs = new ArrayList<String>();
+		if (scriptType == ScriptType.PYDML) {
+			proArgs.add("-python");
+		}
+		proArgs.add("-stats");
+		proArgs.add("-args");
+		proArgs.add(input("X"));
+		proArgs.add(Integer.toString(rows));
+		proArgs.add(Integer.toString(cols));
+		proArgs.add(input("Xt"));
+		proArgs.add(Integer.toString(rows_test));
+		proArgs.add(Integer.toString(cols_test));
+		proArgs.add(input("y"));
+		proArgs.add(input("yt"));
+		proArgs.add(output("w"));
+		programArgs = proArgs.toArray(new String[proArgs.size()]);
+		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
+        
+		fullDMLScriptName = getScript();
+		
+		rCmd = getRCmd(inputDir(), expectedDir());
+		
         // prepare training data set
         double[][] X = getRandomMatrix(rows, cols, 1, 10, sparsity, 100);
         double[][] y = getRandomMatrix(rows, 1, 0.01, 1, 1, 100);
@@ -111,15 +114,13 @@ public class LinearLogRegTest extends AutomatedTestBase
         writeInputMatrix("Xt", Xt, true);
         writeInputMatrix("yt", yt, true);
         
-        
-		boolean exceptionExpected = false;
 		int expectedNumberOfJobs = 31;
-		runTest(true, exceptionExpected, null, expectedNumberOfJobs);
+		runTest(true, EXCEPTION_NOT_EXPECTED, null, expectedNumberOfJobs);
         
 		runRScript(true);
         
         HashMap<CellIndex, Double> wR = readRMatrixFromFS("w");
-        HashMap<CellIndex, Double> wDML= readDMLMatrixFromHDFS("w");
-        TestUtils.compareMatrices(wR, wDML, Math.pow(10, -14), "wR", "wDML");
+        HashMap<CellIndex, Double> wSYSTEMML= readDMLMatrixFromHDFS("w");
+        TestUtils.compareMatrices(wR, wSYSTEMML, Math.pow(10, -14), "wR", "wSYSTEMML");
     }
 }
