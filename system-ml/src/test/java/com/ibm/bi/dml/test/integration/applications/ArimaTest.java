@@ -28,13 +28,12 @@ import org.junit.runners.Parameterized.Parameters;
 import com.ibm.bi.dml.runtime.matrix.MatrixCharacteristics;
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
 import com.ibm.bi.dml.test.integration.AutomatedTestBase;
-import com.ibm.bi.dml.test.integration.TestConfiguration;
 import com.ibm.bi.dml.test.utils.TestUtils;
 
 public abstract class ArimaTest extends AutomatedTestBase {
 	
 	protected final static String TEST_DIR = "applications/arima_box-jenkins/";
-	protected final static String TEST_ARIMA = "arima";
+	protected final static String TEST_NAME = "arima";
 	
 	protected int max_func_invoc, p, d, q, P, D, Q, s, include_mean, useJacobi;
 	
@@ -60,14 +59,11 @@ public abstract class ArimaTest extends AutomatedTestBase {
 	
 	@Override
 	public void setUp() {
-    	addTestConfiguration(TEST_ARIMA, 
-    						 new TestConfiguration(TEST_DIR, 
-    								 			   TEST_ARIMA, 
-    								 			   new String[] { "learnt.model"}));
+    	addTestConfiguration(TEST_DIR, TEST_NAME);
 	}
 	
 	protected void testArima(ScriptType scriptType) {
-		System.out.println("------------ BEGIN " + TEST_ARIMA + " " + scriptType + " TEST WITH {" +
+		System.out.println("------------ BEGIN " + TEST_NAME + " " + scriptType + " TEST WITH {" +
 			max_func_invoc + ", " + 
 			p + ", " + 
 			d + ", " + 
@@ -79,9 +75,8 @@ public abstract class ArimaTest extends AutomatedTestBase {
 			include_mean + ", " + 
 			useJacobi+ "} ------------");
 		this.scriptType = scriptType;
-		 
-		TestConfiguration config = getTestConfiguration(TEST_ARIMA);
-		loadTestConfiguration(config);
+		
+		getAndLoadTestConfiguration(TEST_NAME);
 	
 		List<String> proArgs = new ArrayList<String>();
 		if (scriptType == ScriptType.PYDML) {
@@ -117,7 +112,6 @@ public abstract class ArimaTest extends AutomatedTestBase {
 		runTest(true, EXCEPTION_NOT_EXPECTED, null, -1);
 		
 		runRScript(true);
-		disableOutAndExpectedDeletion();
 
 		double tol = Math.pow(10, -14);
 		HashMap<CellIndex, Double> arima_model_R = readRMatrixFromFS("learnt.model");

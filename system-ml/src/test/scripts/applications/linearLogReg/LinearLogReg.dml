@@ -25,7 +25,7 @@
 # Assume LLR_HOME is set to the home of the dml script
 # Assume input and output directories are on hdfs as INPUT_DIR and OUTPUT_DIR
 # Assume rows = 100 and cols = 50 for x, rows_test= 25 and cols_test = 50 for Xt
-# hadoop jar SystemML.jar -f $LLR_HOME/LinearLogReg.dml -args "$INPUT_DIR/X" 100 50 "$INPUT_DIR/Xt" 25 50 "$INPUT_DIR/y" "$INPUT_DIR/yt" "$OUTPUT_DIR/w"
+# hadoop jar SystemML.jar -f $LLR_HOME/LinearLogReg.dml -args "$INPUT_DIR/X" "$INPUT_DIR/Xt" "$INPUT_DIR/y" "$INPUT_DIR/yt" "$OUTPUT_DIR/w"
 
 C = 2
 tol = 0.001
@@ -41,15 +41,15 @@ sigma3 = 4.0
 psi = 0.1 
 
 # read (training and test) data files
-X = read($1, rows=$2, cols=$3, format="text")
-Xt = read($4, rows=$5, cols=$6, format="text")
-N = $2
-D = $3
-Nt = $5
+X = read($1)
+Xt = read($2)
+N = nrow(X)
+D = ncol(X)
+Nt = nrow(Xt)
 
 # read (training and test) labels
-y = read($7, rows=$2, cols=1, format="text")
-yt = read($8, rows=$5, cols=1, format="text")
+y = read($3)
+yt = read($4)
 
 #initialize w
 w = Rand(rows=D, cols=1, min=0.0, max=0.0);
@@ -225,4 +225,4 @@ while(!converge) {
 	print("     Converge =  " + converge)
 } 
 
-write(w, $9, format="text");
+write(w, $5, format="text");

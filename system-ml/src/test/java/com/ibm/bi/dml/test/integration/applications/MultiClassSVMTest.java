@@ -27,13 +27,12 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
 import com.ibm.bi.dml.test.integration.AutomatedTestBase;
-import com.ibm.bi.dml.test.integration.TestConfiguration;
 import com.ibm.bi.dml.test.utils.TestUtils;
 
 public abstract class MultiClassSVMTest  extends AutomatedTestBase{
 	
 	protected final static String TEST_DIR = "applications/m-svm/";
-	protected final static String TEST_MULTICLASSSVM = "m-svm";
+	protected final static String TEST_NAME = "m-svm";
 
 	protected int numRecords, numFeatures, numClasses;
 	protected double sparsity;
@@ -67,19 +66,18 @@ public abstract class MultiClassSVMTest  extends AutomatedTestBase{
 	 
 	 @Override
 	 public void setUp() {
-		 addTestConfiguration(TEST_MULTICLASSSVM, new TestConfiguration(TEST_DIR, TEST_MULTICLASSSVM,
-	                new String[] { "w" }));
+		 addTestConfiguration(TEST_DIR, TEST_NAME);
 	 }
 	 
 	 protected void testMultiClassSVM(ScriptType scriptType) {
-		 System.out.println("------------ BEGIN " + TEST_MULTICLASSSVM + " " + scriptType + " TEST WITH {" +
+		 System.out.println("------------ BEGIN " + TEST_NAME + " " + scriptType + " TEST WITH {" +
 				 numRecords + ", " + 
 				 numFeatures + ", " + 
 				 numClasses + ", " + 
 				 intercept + ", " + 
 				 sparsity + "} ------------");
 		 this.scriptType = scriptType;
-				
+		 
 		 int rows = numRecords;
 		 int cols = numFeatures;
 		 int classes = numClasses;
@@ -87,9 +85,8 @@ public abstract class MultiClassSVMTest  extends AutomatedTestBase{
 		 double tol = 0.001;
 		 double reg = 1;
 		 int maxiter = 100;
-	        
-		 TestConfiguration config = getTestConfiguration(TEST_MULTICLASSSVM);
-		 loadTestConfiguration(config);
+	     
+		 getAndLoadTestConfiguration(TEST_NAME);
 			
 		 List<String> proArgs = new ArrayList<String>();
 		 if (scriptType == ScriptType.PYDML) {
@@ -126,7 +123,6 @@ public abstract class MultiClassSVMTest  extends AutomatedTestBase{
 		 runTest(true, EXCEPTION_NOT_EXPECTED, null, -1);
 	        
 		 runRScript(true);
-		 disableOutAndExpectedDeletion();
 	        
 		 HashMap<CellIndex, Double> wR = readRMatrixFromFS("w");
 		 HashMap<CellIndex, Double> wSYSTEMML= readDMLMatrixFromHDFS("w");

@@ -27,14 +27,13 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
 import com.ibm.bi.dml.test.integration.AutomatedTestBase;
-import com.ibm.bi.dml.test.integration.TestConfiguration;
 import com.ibm.bi.dml.test.utils.TestUtils;
 
 public abstract class LinearLogRegTest extends AutomatedTestBase
 {
 	
     protected final static String TEST_DIR = "applications/linearLogReg/";
-    protected final static String TEST_LINEAR_LOG_REG = "LinearLogReg";
+    protected final static String TEST_NAME = "LinearLogReg";
 
     protected int numRecords, numFeatures, numTestRecords;
     protected double sparsity;
@@ -59,12 +58,11 @@ public abstract class LinearLogRegTest extends AutomatedTestBase
     @Override
     public void setUp()
     {
-    	addTestConfiguration(TEST_LINEAR_LOG_REG, new TestConfiguration(TEST_DIR, TEST_LINEAR_LOG_REG,
-                new String[] { "w" }));
+    	addTestConfiguration(TEST_DIR, TEST_NAME);
     }
     
     protected void testLinearLogReg(ScriptType scriptType) {
-		System.out.println("------------ BEGIN " + TEST_LINEAR_LOG_REG + " " + scriptType + " TEST WITH {" + numRecords + ", " + numFeatures
+		System.out.println("------------ BEGIN " + TEST_NAME + " " + scriptType + " TEST WITH {" + numRecords + ", " + numFeatures
 				+ ", " + numTestRecords + ", " + sparsity + "} ------------");
 		this.scriptType = scriptType;
     	
@@ -73,12 +71,7 @@ public abstract class LinearLogRegTest extends AutomatedTestBase
         int rows_test = numTestRecords; // # of rows in the test data 
         int cols_test = cols;
 
-        TestConfiguration config = getTestConfiguration(TEST_LINEAR_LOG_REG);
-        config.addVariable("rows", rows);
-        config.addVariable("cols", cols);
-        config.addVariable("rows_test", rows_test);
-        config.addVariable("cols_test", cols_test);
-        loadTestConfiguration(config);
+        getAndLoadTestConfiguration(TEST_NAME);
            
 		List<String> proArgs = new ArrayList<String>();
 		if (scriptType == ScriptType.PYDML) {
@@ -87,11 +80,7 @@ public abstract class LinearLogRegTest extends AutomatedTestBase
 		proArgs.add("-stats");
 		proArgs.add("-args");
 		proArgs.add(input("X"));
-		proArgs.add(Integer.toString(rows));
-		proArgs.add(Integer.toString(cols));
 		proArgs.add(input("Xt"));
-		proArgs.add(Integer.toString(rows_test));
-		proArgs.add(Integer.toString(cols_test));
 		proArgs.add(input("y"));
 		proArgs.add(input("yt"));
 		proArgs.add(output("w"));
@@ -105,20 +94,20 @@ public abstract class LinearLogRegTest extends AutomatedTestBase
         // prepare training data set
         double[][] X = getRandomMatrix(rows, cols, 1, 10, sparsity, 100);
         double[][] y = getRandomMatrix(rows, 1, 0.01, 1, 1, 100);
-        writeInputMatrix("X", X, true);
-        writeInputMatrix("y", y, true);
-        
+        writeInputMatrixWithMTD("X", X, true);
+        writeInputMatrixWithMTD("y", y, true);
+
         // prepare test data set
         double[][] Xt = getRandomMatrix(rows_test, cols_test, 1, 10, sparsity, 100);
         double[][] yt = getRandomMatrix(rows_test, 1, 0.01, 1, 1, 100);
-        writeInputMatrix("Xt", Xt, true);
-        writeInputMatrix("yt", yt, true);
+        writeInputMatrixWithMTD("Xt", Xt, true);
+        writeInputMatrixWithMTD("yt", yt, true);
         
 		int expectedNumberOfJobs = 31;
 		runTest(true, EXCEPTION_NOT_EXPECTED, null, expectedNumberOfJobs);
         
 		runRScript(true);
-        
+
         HashMap<CellIndex, Double> wR = readRMatrixFromFS("w");
         HashMap<CellIndex, Double> wSYSTEMML= readDMLMatrixFromHDFS("w");
         TestUtils.compareMatrices(wR, wSYSTEMML, Math.pow(10, -14), "wR", "wSYSTEMML");

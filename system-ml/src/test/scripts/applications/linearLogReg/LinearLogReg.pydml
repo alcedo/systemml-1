@@ -21,11 +21,11 @@
 # setup optimization parameters (See: Trust Region Newton Method for Logistic Regression, Lin, Weng and Keerthi, JMLR 9 (2008) 627-650)
 
 # Note this script is externalized to customers, please do not change w/o consulting component owner.
-# How to invoke this dml script LinearLogReg.dml?
-# Assume LLR_HOME is set to the home of the dml script
+# How to invoke this pydml script LinearLogReg.pydml?
+# Assume LLR_HOME is set to the home of the pydml script
 # Assume input and output directories are on hdfs as INPUT_DIR and OUTPUT_DIR
 # Assume rows = 100 and cols = 50 for x, rows_test= 25 and cols_test = 50 for Xt
-# hadoop jar SystemML.jar -f $LLR_HOME/LinearLogReg.pydml -python -args "$INPUT_DIR/X" 100 50 "$INPUT_DIR/Xt" 25 50 "$INPUT_DIR/y" "$INPUT_DIR/yt" "$OUTPUT_DIR/w"
+# hadoop jar SystemML.jar -f $LLR_HOME/LinearLogReg.pydml -python -args "$INPUT_DIR/X" "$INPUT_DIR/Xt" "$INPUT_DIR/y" "$INPUT_DIR/yt" "$OUTPUT_DIR/w"
 
 C = 2
 tol = 0.001
@@ -41,15 +41,15 @@ sigma3 = 4.0
 psi = 0.1
 
 # load (training and test) data files
-X = load($1, rows=$2, cols=$3, format="text")
-Xt = load($4, rows=$5, cols=$6, format="text")
-N = $2
-D = $3
-Nt = $5
+X = load($1)
+Xt = load($2)
+N = nrow(X)
+D = ncol(X)
+Nt = nrow(Xt)
 
 # load (training and test) labels
-y = load($7, rows=$2, cols=1, format="text")
-yt = load($8, rows=$5, cols=1, format="text")
+y = load($3)
+yt = load($4)
 
 #initialize w
 w = Rand(rows=D, cols=1, min=0.0, max=0.0)
@@ -208,4 +208,4 @@ while(!converge):
 	print("     Converge =  " + converge)
 # end while(!converge)
 
-save(w, $9, format="text")
+save(w, $5, format="text")

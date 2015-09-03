@@ -20,7 +20,7 @@
 # learns one-against-the-rest binary-class classifiers
 # 
 # Example Usage:
-# Assume SVM_HOME is set to the home of the dml script
+# Assume SVM_HOME is set to the home of the pydml script
 # Assume input and output directories are on hdfs as INPUT_DIR and OUTPUT_DIR
 # Assume number of classes is 10, epsilon = 0.001, lambda=1.0, max_iterations = 100
 # 
