@@ -29,7 +29,6 @@ import org.junit.runners.Parameterized.Parameters;
 import com.ibm.bi.dml.api.DMLScript.RUNTIME_PLATFORM;
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
 import com.ibm.bi.dml.test.integration.AutomatedTestBase;
-import com.ibm.bi.dml.test.integration.TestConfiguration;
 import com.ibm.bi.dml.test.utils.TestUtils;
 import com.ibm.bi.dml.utils.Statistics;
 
@@ -50,13 +49,14 @@ public abstract class ID3Test extends AutomatedTestBase
 	 public static Collection<Object[]> data() {
 	   //TODO fix R script (values in 'nodes' for different settings incorrect, e.g., with minSplit=10 instead of 2)	 
 	   Object[][] data = new Object[][] { {100, 50}, {1000, 50} };
+//	   Object[][] data = new Object[][] { {100, 50} };
 	   return Arrays.asList(data);
 	 }
 
     @Override
     public void setUp()
     {
-    	addTestConfiguration(TEST_NAME, new TestConfiguration(TEST_DIR, TEST_NAME, new String[] { "nodes", "edges"  }));
+    	addTestConfiguration(TEST_DIR, TEST_NAME);
     }
     
     protected void testID3(ScriptType scriptType) 
@@ -67,11 +67,8 @@ public abstract class ID3Test extends AutomatedTestBase
     	
     	int rows = numRecords;			// # of rows in the training data 
         int cols = numFeatures;
-
-        TestConfiguration config = getTestConfiguration(TEST_NAME);
-        config.addVariable("rows", rows);
-        config.addVariable("cols", cols);
-        loadTestConfiguration(config);
+        
+        getAndLoadTestConfiguration(TEST_NAME);
 
 		List<String> proArgs = new ArrayList<String>();
 		if (scriptType == ScriptType.PYDML) {
@@ -81,8 +78,6 @@ public abstract class ID3Test extends AutomatedTestBase
 		proArgs.add("-args");
 		proArgs.add(input("X"));
 		proArgs.add(input("y"));
-		proArgs.add(Integer.toString(rows));
-		proArgs.add(Integer.toString(cols));
 		proArgs.add(output("nodes"));
 		proArgs.add(output("edges"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
@@ -95,8 +90,8 @@ public abstract class ID3Test extends AutomatedTestBase
         // prepare training data set
         double[][] X = round(getRandomMatrix(rows, cols, 1, 10, 1.0, 3));
         double[][] y = round(getRandomMatrix(rows, 1, 1, 10, 1.0, 7));
-        writeInputMatrix("X", X, true);
-        writeInputMatrix("y", y, true);
+        writeInputMatrixWithMTD("X", X, true);
+        writeInputMatrixWithMTD("y", y, true);
         
         //run tests
         //(changed expected MR from 62 to 66 because we now also count MR jobs in predicates)

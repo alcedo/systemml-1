@@ -44,6 +44,7 @@ public class GNMFTest extends AutomatedTestBase
 	@Parameters
 	 public static Collection<Object[]> data() {
 	   Object[][] data = new Object[][] { { 0, 0 }, { 3, 2 }, { 2, 2 }, { 2, 1 }, { 2, 0 }, { 3, 0 }};
+//	   Object[][] data = new Object[][] { { 0, 0 } };
 	   return Arrays.asList(data);
 	 }
 	 
@@ -75,7 +76,8 @@ public class GNMFTest extends AutomatedTestBase
 		programArgs = new String[]{			GNMF_HOME + INPUT_DIR + "v", 
 											GNMF_HOME + INPUT_DIR + "w", 
                 							GNMF_HOME + INPUT_DIR + "h", 
-                							Integer.toString(m), Integer.toString(n), Integer.toString(k), Integer.toString(maxiter),
+//                							Integer.toString(m), Integer.toString(n), Integer.toString(k),
+                							Integer.toString(maxiter),
                 							GNMF_HOME + OUTPUT_DIR + "w", 
                 							GNMF_HOME + OUTPUT_DIR + "h"};
 		
@@ -91,9 +93,9 @@ public class GNMFTest extends AutomatedTestBase
 		double[][] w = getRandomMatrix(m, k, 0, 1, 1, System.currentTimeMillis());
 		double[][] h = getRandomMatrix(k, n, 0, 1, 1, System.currentTimeMillis());
 
-		writeInputMatrix("v", v, true);
-		writeInputMatrix("w", w, true);
-		writeInputMatrix("h", h, true);
+		writeInputMatrixWithMTD("v", v, true);
+		writeInputMatrixWithMTD("w", w, true);
+		writeInputMatrixWithMTD("h", h, true);
 
 		for (int i = 0; i < maxiter; i++) {
 			double[][] tW = TestUtils.performTranspose(w);

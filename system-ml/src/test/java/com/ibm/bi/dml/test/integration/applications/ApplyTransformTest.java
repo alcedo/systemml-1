@@ -29,12 +29,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.bi.dml.runtime.matrix.data.MatrixValue.CellIndex;
 import com.ibm.bi.dml.test.integration.AutomatedTestBase;
-import com.ibm.bi.dml.test.integration.TestConfiguration;
 
 public abstract class ApplyTransformTest extends AutomatedTestBase{
 	
 	protected final static String TEST_DIR = "applications/apply-transform/";
-	protected final static String TEST_APPLY_TRANSFORM = "apply-transform";
+	protected final static String TEST_NAME = "apply-transform";
 	
 	protected String X, missing_value_maps, binning_maps, dummy_coding_maps, normalization_maps;
     
@@ -69,17 +68,15 @@ public abstract class ApplyTransformTest extends AutomatedTestBase{
 
 	 @Override
 		public void setUp() {
-	    	addTestConfiguration(TEST_APPLY_TRANSFORM, new TestConfiguration(TEST_DIR, TEST_APPLY_TRANSFORM,
-	                new String[] {"transformed_X.mtx"}));
+	    	addTestConfiguration(TEST_DIR, TEST_NAME);
 		}
 
 	    protected void testApplyTransform(ScriptType scriptType) {
-		 System.out.println("------------ BEGIN " + TEST_APPLY_TRANSFORM + " " + scriptType + " TEST WITH {" + X + ", " + missing_value_maps
+		 System.out.println("------------ BEGIN " + TEST_NAME + " " + scriptType + " TEST WITH {" + X + ", " + missing_value_maps
 					+ ", " + binning_maps + ", " + dummy_coding_maps + ", " + normalization_maps + "} ------------");
 		 this.scriptType = scriptType;
 		 
-		 TestConfiguration config = getTestConfiguration(TEST_APPLY_TRANSFORM);
-		 loadTestConfiguration(config);
+		 getAndLoadTestConfiguration(TEST_NAME);
 		 
 		 List<String> proArgs = new ArrayList<String>();
 		 if (scriptType == ScriptType.PYDML) {
@@ -99,7 +96,7 @@ public abstract class ApplyTransformTest extends AutomatedTestBase{
 
 		 fullDMLScriptName = getScript();
 		 
-		 runTest(true, false, null, -1);
+		 runTest(true, EXCEPTION_NOT_EXPECTED, null, -1);
 		 
 		 HashMap<CellIndex, Double> XDML= readDMLMatrixFromHDFS("transformed_X.mtx");
 		 
