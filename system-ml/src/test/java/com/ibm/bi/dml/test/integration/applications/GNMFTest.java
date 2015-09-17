@@ -46,7 +46,6 @@ public abstract class GNMFTest extends AutomatedTestBase
 	@Parameters
 	 public static Collection<Object[]> data() {
 	   Object[][] data = new Object[][] { { 100, 50, 5 }, { 2000, 1500, 50 }, { 7000, 1500, 50 }};
-//	   Object[][] data = new Object[][] { { 100, 50, 5 } };
 	   return Arrays.asList(data);
 	 }
 	 
@@ -77,7 +76,6 @@ public abstract class GNMFTest extends AutomatedTestBase
 		proArgs.add(output("w"));
 		proArgs.add(output("h"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		fullDMLScriptName = getScript();
 		
@@ -123,18 +121,13 @@ public abstract class GNMFTest extends AutomatedTestBase
 		runTest(true, EXCEPTION_NOT_EXPECTED, null, expectedNumberOfJobs); 
 		
 		runRScript(true);
-//		disableOutAndExpectedDeletion();
 
 		HashMap<CellIndex, Double> hmWSYSTEMML = readDMLMatrixFromHDFS("w");
 		HashMap<CellIndex, Double> hmHSYSTEMML = readDMLMatrixFromHDFS("h");
 		HashMap<CellIndex, Double> hmWR = readRMatrixFromFS("w");
 		HashMap<CellIndex, Double> hmHR = readRMatrixFromFS("h");
-		//HashMap<CellIndex, Double> hmWJava = TestUtils.convert2DDoubleArrayToHashMap(w);
-		//HashMap<CellIndex, Double> hmHJava = TestUtils.convert2DDoubleArrayToHashMap(h);
 
 		TestUtils.compareMatrices(hmWSYSTEMML, hmWR, 0.000001, "hmWSYSTEMML", "hmWR");
 		TestUtils.compareMatrices(hmHSYSTEMML, hmHR, 0.000001, "hmHSYSTEMML", "hmHR");
-		//TestUtils.compareMatrices(hmWDML, hmWJava, 0.000001, "hmWDML", "hmWJava");
-		//TestUtils.compareMatrices(hmWR, hmWJava, 0.000001, "hmRDML", "hmWJava");
 	}
 }

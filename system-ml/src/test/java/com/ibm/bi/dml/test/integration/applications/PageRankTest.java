@@ -43,7 +43,6 @@ public abstract class PageRankTest extends AutomatedTestBase {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] { { 50, 50 }, { 1500, 1500 }, { 7500, 7500 } };
-//		Object[][] data = new Object[][] { { 50, 50 } };
 		return Arrays.asList(data);
 	}
 
@@ -77,7 +76,6 @@ public abstract class PageRankTest extends AutomatedTestBase {
 		proArgs.add(Integer.toString(maxiter));
 		proArgs.add(output("p"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		fullDMLScriptName = getScript();
 

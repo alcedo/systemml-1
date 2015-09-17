@@ -49,7 +49,6 @@ public abstract class ID3Test extends AutomatedTestBase
 	 public static Collection<Object[]> data() {
 	   //TODO fix R script (values in 'nodes' for different settings incorrect, e.g., with minSplit=10 instead of 2)	 
 	   Object[][] data = new Object[][] { {100, 50}, {1000, 50} };
-//	   Object[][] data = new Object[][] { {100, 50} };
 	   return Arrays.asList(data);
 	 }
 
@@ -81,7 +80,6 @@ public abstract class ID3Test extends AutomatedTestBase
 		proArgs.add(output("nodes"));
 		proArgs.add(output("edges"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		fullDMLScriptName = getScript();
 		
@@ -100,7 +98,6 @@ public abstract class ID3Test extends AutomatedTestBase
 		runRScript(true);
         
 		//check also num actually executed jobs
-		
 		if(AutomatedTestBase.rtplatform != RUNTIME_PLATFORM.SPARK) {
 			long actualMR = Statistics.getNoOfExecutedMRJobs();
 			Assert.assertEquals("Wrong number of executed jobs: expected 0 but executed "+actualMR+".", 0, actualMR);

@@ -50,7 +50,6 @@ public abstract class LinearRegressionTest extends AutomatedTestBase {
 			   {100, 50, 0.01}, {1000, 500, 0.01}, {10000, 750, 0.01}, {100000, 1000, 0.01},
 			   //dense tests (sparsity=0.7)
 			   {100, 50, 0.7}, {1000, 500, 0.7}, {10000, 750, 0.7} };
-//	   Object[][] data = new Object[][] { { 100, 50, 0.01 } };
 	   return Arrays.asList(data);
 	 }
 	 
@@ -81,7 +80,6 @@ public abstract class LinearRegressionTest extends AutomatedTestBase {
 		proArgs.add(Double.toString(Math.pow(10, -8)));
 		proArgs.add(output("w"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
         
 		fullDMLScriptName = getScript();
 		

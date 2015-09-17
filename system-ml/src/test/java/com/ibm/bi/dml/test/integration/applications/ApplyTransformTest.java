@@ -60,9 +60,6 @@ public abstract class ApplyTransformTest extends AutomatedTestBase{
 			   {"newX_nomissing.mtx", " ", "bindefns.mtx", "dummy_code_maps.mtx", " "},
 			   {"newX_nomissing.mtx", " ", " ", " ", "normalization_maps.mtx"}
 		};
-//	   Object[][] data = new Object[][] { 
-//			   {"newX.mtx", "missing_value_map.mtx", "bindefns.mtx", "dummy_code_maps.mtx", "normalization_maps.mtx"}
-//		};
 	   return Arrays.asList(data);
 	 }
 
@@ -92,7 +89,6 @@ public abstract class ApplyTransformTest extends AutomatedTestBase{
 		 proArgs.add("transformed_X=" + output("transformed_X.mtx"));
 		 proArgs.add("Log=" + output("log.csv"));
 		 programArgs = proArgs.toArray(new String[proArgs.size()]);
-		 System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 
 		 fullDMLScriptName = getScript();
 		 
@@ -176,7 +172,5 @@ public abstract class ApplyTransformTest extends AutomatedTestBase{
 			 if(!XDML.containsKey(cell4)) success = false;
 			 else success = success && (dummy_coding_maps != " ") ? (XDML.get(cell4).doubleValue() == 1) : (XDML.get(cell4).doubleValue() == 2);
 		 }
-		 
-		 System.out.println("SUCCESS: " + success);
 	 }
 }

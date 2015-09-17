@@ -49,7 +49,6 @@ public abstract class WelchTTest extends AutomatedTestBase {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] { { 5, 100, 150}, { 50, 2000, 1500}, { 50, 7000, 1500}};
-//		Object[][] data = new Object[][] { { 5, 100, 150} };
 		return Arrays.asList(data);
 	}
 	 
@@ -74,7 +73,6 @@ public abstract class WelchTTest extends AutomatedTestBase {
 		proArgs.add(output("t_statistics"));
 		proArgs.add(output("degrees_of_freedom"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		fullDMLScriptName = getScript();
 		
@@ -93,7 +91,6 @@ public abstract class WelchTTest extends AutomatedTestBase {
 		runTest(true, EXCEPTION_NOT_EXPECTED, null, expectedNumberOfJobs); 
 		
 		runRScript(true);
-//		disableOutAndExpectedDeletion();
 
 		double tol = Math.pow(10, -13);
 		HashMap<CellIndex, Double> t_statistics_R = readRMatrixFromFS("t_statistics");

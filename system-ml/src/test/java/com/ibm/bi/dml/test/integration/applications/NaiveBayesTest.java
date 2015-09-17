@@ -57,7 +57,6 @@ public abstract class NaiveBayesTest  extends AutomatedTestBase{
 			   {1000, 500, 10, 0.7}, // example running time: 6s (dml: .7s)
 			   {10000, 750, 10, 0.7} // example running time: 61s (dml: 5.6s)
 			   };
-//	   Object[][] data = new Object[][] { {100, 50, 10, 0.01} };
 	   return Arrays.asList(data);
 	 }
 	 
@@ -94,7 +93,6 @@ public abstract class NaiveBayesTest  extends AutomatedTestBase{
 		 proArgs.add("conditionals=" + output("conditionals"));
 		 proArgs.add("accuracy=" + output("accuracy"));
 		 programArgs = proArgs.toArray(new String[proArgs.size()]);
-		 System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		 fullDMLScriptName = getScript();
 
@@ -113,15 +111,12 @@ public abstract class NaiveBayesTest  extends AutomatedTestBase{
 		 runTest(true, EXCEPTION_NOT_EXPECTED, null, -1);
 	        
 		 runRScript(true);
-//		 disableOutAndExpectedDeletion();
 	        
 		 HashMap<CellIndex, Double> priorR = readRMatrixFromFS("prior");
 		 HashMap<CellIndex, Double> priorSYSTEMML= readDMLMatrixFromHDFS("prior");
 		 HashMap<CellIndex, Double> conditionalsR = readRMatrixFromFS("conditionals");
-		 HashMap<CellIndex, Double> conditionalsSYSTEMML = readDMLMatrixFromHDFS("conditionals");
-		 boolean success = 
-				 TestUtils.compareMatrices(priorR, priorSYSTEMML, Math.pow(10, -12), "priorR", "priorSYSTEMML")
-				 && TestUtils.compareMatrices(conditionalsR, conditionalsSYSTEMML, Math.pow(10.0, -12.0), "conditionalsR", "conditionalsSYSTEMML");
-		 System.out.println(success);
+		 HashMap<CellIndex, Double> conditionalsSYSTEMML = readDMLMatrixFromHDFS("conditionals"); 
+		 TestUtils.compareMatrices(priorR, priorSYSTEMML, Math.pow(10, -12), "priorR", "priorSYSTEMML");
+		 TestUtils.compareMatrices(conditionalsR, conditionalsSYSTEMML, Math.pow(10.0, -12.0), "conditionalsR", "conditionalsSYSTEMML");
 	 }
 }

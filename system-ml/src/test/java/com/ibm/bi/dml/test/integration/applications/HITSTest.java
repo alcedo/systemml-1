@@ -18,7 +18,6 @@
 package com.ibm.bi.dml.test.integration.applications;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,7 +57,6 @@ public abstract class HITSTest extends AutomatedTestBase
 		proArgs.add(output("hubs"));
 		proArgs.add(output("authorities"));
 		programArgs = proArgs.toArray(new String[proArgs.size()]);
-		System.out.println("arguments from test case: " + Arrays.toString(programArgs));
 		
 		fullDMLScriptName = getScript();
 		
@@ -77,7 +75,6 @@ public abstract class HITSTest extends AutomatedTestBase
 		runTest(true, EXCEPTION_NOT_EXPECTED, null, expectedNumberOfJobs);
 		
 		runRScript(true);
-//		disableOutAndExpectedDeletion();
 
 		HashMap<CellIndex, Double> hubsSYSTEMML = readDMLMatrixFromHDFS("hubs");
 		HashMap<CellIndex, Double> authSYSTEMML = readDMLMatrixFromHDFS("authorities");

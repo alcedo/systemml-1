@@ -100,10 +100,10 @@ public abstract class MultiClassSVMTest  extends AutomatedTestBase
 		 proArgs.add("-nvargs");
 		 proArgs.add("X=" + input("X"));
 		 proArgs.add("Y=" + input("Y"));
-		 proArgs.add("classes=" + Integer.toString(classes));
-		 proArgs.add("tol=" + Double.toString(tol));
-		 proArgs.add("reg=" + Double.toString(reg));
-		 proArgs.add("maxiter=" + Integer.toString(maxiter));
+		 proArgs.add("classes=" + classes);
+		 proArgs.add("tol=" + tol);
+		 proArgs.add("reg=" + reg);
+		 proArgs.add("maxiter=" + maxiter);
 		 proArgs.add("icpt=" + ((intercept) ? "1" : "0"));
 		 proArgs.add("model=" + output("w"));
 		 proArgs.add("Log=" + output("Log"));
