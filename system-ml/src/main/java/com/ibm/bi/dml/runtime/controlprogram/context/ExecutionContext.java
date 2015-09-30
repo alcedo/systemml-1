@@ -27,6 +27,7 @@ import com.ibm.bi.dml.debug.DMLProgramCounter;
 import com.ibm.bi.dml.debug.DebugState;
 import com.ibm.bi.dml.parser.DMLProgram;
 import com.ibm.bi.dml.parser.Expression.ValueType;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
 import com.ibm.bi.dml.runtime.controlprogram.LocalVariableMap;
 import com.ibm.bi.dml.runtime.controlprogram.Program;
@@ -59,6 +60,9 @@ public class ExecutionContext
 	
 	//debugging (optional)
 	protected DebugState _dbState = null;
+	
+	// DML or PyDML
+	protected ScriptType _scriptType = null;
 	
 	protected ExecutionContext()
 	{
@@ -519,4 +523,19 @@ public class ExecutionContext
 		_dbState.prevPC.setProgramBlockNumber(_dbState.getPC().getProgramBlockNumber());
 		_dbState.prevPC.setLineNumber(currInst.getLineNum());
 	}
+
+	public ScriptType getScriptType() {
+		if (_scriptType != null) {
+			return _scriptType;
+		} else if (_prog != null) {
+			return _prog.getScriptType();
+		} else {
+			return null;
+		}
+	}
+
+	public void setScriptType(ScriptType scriptType) {
+		this._scriptType = scriptType;
+	}
+	
 }

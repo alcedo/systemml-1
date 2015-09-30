@@ -56,6 +56,8 @@ public class DMLProgram
 	private HashMap<String,DMLProgram> _namespaces;
 	public static String DEFAULT_NAMESPACE = ".defaultNS";
 	public static String INTERNAL_NAMESPACE = "_internal"; // used for multi-return builtin functions
+	private ScriptType _scriptType = null;
+	
 	private static final Log LOG = LogFactory.getLog(DMLProgram.class.getName());
 	
 	public DMLProgram(){
@@ -177,6 +179,7 @@ public class DMLProgram
 		
 		// constructor resets the set of registered functions
 		Program rtprog = new Program();
+		rtprog.setScriptType(_scriptType);
 		
 		// for all namespaces, translate function statement blocks into function program blocks
 		for (String namespace : _namespaces.keySet()){
@@ -779,5 +782,14 @@ public class DMLProgram
 	{
 		return fkey.split(Program.KEY_DELIM);
 	}
+
+	public ScriptType getScriptType() {
+		return _scriptType;
+	}
+
+	public void setScriptType(ScriptType scriptType) {
+		this._scriptType = scriptType;
+	}
+
 }
 

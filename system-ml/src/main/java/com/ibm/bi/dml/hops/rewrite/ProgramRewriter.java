@@ -37,6 +37,7 @@ import com.ibm.bi.dml.parser.ParForStatementBlock;
 import com.ibm.bi.dml.parser.StatementBlock;
 import com.ibm.bi.dml.parser.WhileStatement;
 import com.ibm.bi.dml.parser.WhileStatementBlock;
+import com.ibm.bi.dml.parser.ScriptType;
 
 /**
  * This program rewriter applies a variety of rule-based rewrites
@@ -51,6 +52,7 @@ public class ProgramRewriter
 	
 	private ArrayList<HopRewriteRule> _dagRuleSet = null;
 	private ArrayList<StatementBlockRewriteRule> _sbRuleSet = null;
+	private ScriptType _scriptType = null;
 	
 	static{
 		// for internal debugging only
@@ -268,6 +270,9 @@ public class ProgramRewriter
 		for( HopRewriteRule r : _dagRuleSet )
 		{
 			Hop.resetVisitStatus( roots ); //reset for each rule
+			if (r instanceof RewriteConstantFolding) {
+				((RewriteConstantFolding) r).setProgramRewriter(this);
+			}
 			roots = r.rewriteHopDAGs(roots, state);
 		}
 		
@@ -378,5 +383,13 @@ public class ProgramRewriter
 		}
 		
 		return ret;
+	}
+
+	public ScriptType getScriptType() {
+		return _scriptType;
+	}
+
+	public void setScriptType(ScriptType scriptType) {
+		this._scriptType = scriptType;
 	}
 }

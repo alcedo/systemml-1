@@ -35,6 +35,7 @@ import com.ibm.bi.dml.lops.Lop;
 import com.ibm.bi.dml.lops.LopsException;
 import com.ibm.bi.dml.lops.compile.Dag;
 import com.ibm.bi.dml.parser.Expression.DataType;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
 import com.ibm.bi.dml.runtime.DMLUnsupportedOperationException;
 import com.ibm.bi.dml.runtime.controlprogram.Program;
@@ -42,7 +43,9 @@ import com.ibm.bi.dml.runtime.controlprogram.ProgramBlock;
 import com.ibm.bi.dml.runtime.controlprogram.context.ExecutionContext;
 import com.ibm.bi.dml.runtime.controlprogram.context.ExecutionContextFactory;
 import com.ibm.bi.dml.runtime.instructions.Instruction;
+import com.ibm.bi.dml.runtime.instructions.cp.BooleanObject;
 import com.ibm.bi.dml.runtime.instructions.cp.ScalarObject;
+import com.ibm.bi.dml.utils.PyDMLUtils;
 
 /**
  * Rule: Constant Folding. For all statement blocks, 
@@ -59,6 +62,7 @@ public class RewriteConstantFolding extends HopRewriteRule
 	//reuse basic execution runtime
 	private static ProgramBlock     _tmpPB = null;
 	private static ExecutionContext _tmpEC = null;
+	private ProgramRewriter _programRewriter = null;
 	
 	
 	@Override
@@ -208,6 +212,9 @@ public class RewriteConstantFolding extends HopRewriteRule
 		
 		//execute instructions
 		ExecutionContext ec = getExecutionContext();
+		if (_programRewriter != null) {
+			ec.setScriptType(_programRewriter.getScriptType());
+		}
 		ProgramBlock pb = getProgramBlock();
 		pb.setInstructions( inst );
 		
@@ -216,13 +223,20 @@ public class RewriteConstantFolding extends HopRewriteRule
 		//get scalar result (check before invocation)
 		ScalarObject so = (ScalarObject) ec.getVariable(TMP_VARNAME);
 		LiteralOp literal = null;
-		switch( bop.getValueType() ){
-			case DOUBLE:  literal = new LiteralOp(String.valueOf(so.getDoubleValue()),so.getDoubleValue()); break;
-			case INT:     literal = new LiteralOp(String.valueOf(so.getLongValue()),so.getLongValue()); break;
-			case BOOLEAN: literal = new LiteralOp(String.valueOf(so.getBooleanValue()),so.getBooleanValue()); break;
-			case STRING:  literal = new LiteralOp(String.valueOf(so.getStringValue()),so.getStringValue()); break;	
-			default:
-				throw new HopsException("Unsupported literal value type: "+bop.getValueType());
+
+		if ((so instanceof BooleanObject) && (ec.getScriptType() == ScriptType.PYDML)) {
+			// Handle PyDML boolean case (True/False)
+			String pyDmlBool = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(so.getStringValue());
+			literal = new LiteralOp(pyDmlBool,so.getBooleanValue());
+		} else {
+			switch( bop.getValueType() ){
+				case DOUBLE:  literal = new LiteralOp(String.valueOf(so.getDoubleValue()),so.getDoubleValue()); break;
+				case INT:     literal = new LiteralOp(String.valueOf(so.getLongValue()),so.getLongValue()); break;
+				case BOOLEAN: literal = new LiteralOp(String.valueOf(so.getBooleanValue()),so.getBooleanValue()); break;
+				case STRING:  literal = new LiteralOp(String.valueOf(so.getStringValue()),so.getStringValue()); break;
+				default:
+					throw new HopsException("Unsupported literal value type: "+bop.getValueType());
+			}
 		}
 		
 		//cleanup
@@ -327,4 +341,13 @@ public class RewriteConstantFolding extends HopRewriteRule
 				&& ( (in.get(0) instanceof LiteralOp && ((LiteralOp)in.get(0)).getBooleanValue())   
 				   ||(in.get(1) instanceof LiteralOp && ((LiteralOp)in.get(1)).getBooleanValue())) );			
 	}
+
+	public ProgramRewriter getProgramRewriter() {
+		return _programRewriter;
+	}
+
+	public void setProgramRewriter(ProgramRewriter programRewriter) {
+		this._programRewriter = programRewriter;
+	}
+	
 }

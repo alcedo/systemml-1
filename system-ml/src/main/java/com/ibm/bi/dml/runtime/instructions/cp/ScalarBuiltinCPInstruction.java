@@ -19,11 +19,13 @@ package com.ibm.bi.dml.runtime.instructions.cp;
 
 import com.ibm.bi.dml.api.DMLScript;
 import com.ibm.bi.dml.parser.Expression.ValueType;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
 import com.ibm.bi.dml.runtime.DMLScriptException;
 import com.ibm.bi.dml.runtime.controlprogram.context.ExecutionContext;
 import com.ibm.bi.dml.runtime.matrix.operators.Operator;
 import com.ibm.bi.dml.runtime.matrix.operators.SimpleOperator;
+import com.ibm.bi.dml.utils.PyDMLUtils;
 
 
 public class ScalarBuiltinCPInstruction extends BuiltinUnaryCPInstruction
@@ -49,6 +51,11 @@ public class ScalarBuiltinCPInstruction extends BuiltinUnaryCPInstruction
 		//core execution
 		if ( opcode.equalsIgnoreCase("print") ) {
 			String outString = so.getStringValue();
+			
+			// Handle PyDML boolean case (True/False)
+			if ((so instanceof BooleanObject) && (ec.getScriptType() == ScriptType.PYDML)) {
+				outString = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(outString);
+			}
 			
 			// print to stdout only when suppress flag in DMLScript is not set.
 			// The flag will be set, for example, when SystemML is invoked in fenced mode from Jaql.

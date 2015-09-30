@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.ibm.bi.dml.parser.DMLProgram;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
 import com.ibm.bi.dml.runtime.DMLScriptException;
 import com.ibm.bi.dml.runtime.DMLUnsupportedOperationException;
@@ -34,8 +35,8 @@ public class Program
 	public static final String KEY_DELIM = "::";
 	
 	public ArrayList<ProgramBlock> _programBlocks;
-
 	private HashMap<String, HashMap<String,FunctionProgramBlock>> _namespaceFunctions;
+	private ScriptType _scriptType = null;
 	
 	public Program() throws DMLRuntimeException {
 		_namespaceFunctions = new HashMap<String, HashMap<String,FunctionProgramBlock>>(); 
@@ -161,4 +162,13 @@ public class Program
 			pb.printMe();
 		}
 	}
+
+	public ScriptType getScriptType() {
+		return _scriptType;
+	}
+
+	public void setScriptType(ScriptType scriptType) {
+		this._scriptType = scriptType;
+	}
+	
 }

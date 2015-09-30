@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.DefaultErrorStrategy;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -49,6 +50,7 @@ import com.ibm.bi.dml.parser.LanguageException;
 import com.ibm.bi.dml.parser.ParForStatement;
 import com.ibm.bi.dml.parser.ParForStatementBlock;
 import com.ibm.bi.dml.parser.ParseException;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.parser.Statement;
 import com.ibm.bi.dml.parser.StatementBlock;
 import com.ibm.bi.dml.parser.WhileStatement;
@@ -140,6 +142,7 @@ public class DMLParserWrapper {
 		if(prog == null) {
 			throw new ParseException("One or more errors found during parsing (could not construct AST for file: " + fileName + "). Cannot proceed ahead.");
 		}
+		prog.setScriptType(ScriptType.DML);
 		return prog;
 	}
 

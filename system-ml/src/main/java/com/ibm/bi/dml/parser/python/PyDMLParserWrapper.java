@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -55,6 +56,7 @@ import com.ibm.bi.dml.parser.python.PydmlParser.FunctionStatementContext;
 import com.ibm.bi.dml.parser.python.PydmlParser.PmlprogramContext;
 import com.ibm.bi.dml.parser.python.PydmlParser.StatementContext;
 import com.ibm.bi.dml.parser.python.PydmlSyntacticErrorListener.CustomDmlErrorListener;
+import com.ibm.bi.dml.parser.ScriptType;
 
 /**
  * Logic of this wrapper is similar to DMLParserWrapper.
@@ -119,6 +121,7 @@ public class PyDMLParserWrapper {
 		if(prog == null) {
 			throw new ParseException("One or more errors found during parsing. (could not construct AST for file: " + fileName + "). Cannot proceed ahead.");
 		}
+		prog.setScriptType(ScriptType.PYDML);
 		return prog;
 	}
 

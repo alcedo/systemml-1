@@ -60,6 +60,7 @@ import com.ibm.bi.dml.parser.DMLProgram;
 import com.ibm.bi.dml.parser.DMLTranslator;
 import com.ibm.bi.dml.parser.LanguageException;
 import com.ibm.bi.dml.parser.ParseException;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.parser.antlr4.DMLParserWrapper;
 import com.ibm.bi.dml.parser.python.PyDMLParserWrapper;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
@@ -633,7 +634,7 @@ public class DMLScript
 			case HYBRID:
 			case SPARK:
 			case HYBRID_SPARK:
-				executeHadoop(dmlt, prog, conf, dmlScriptStr, allArgs);
+				executeHadoop(dmlt, prog, conf, dmlScriptStr, allArgs, parsePyDML);
 				break;
 				
 			default:
@@ -750,7 +751,7 @@ public class DMLScript
 	 * @throws DMLRuntimeException 
 	 * @throws DMLException 
 	 */
-	private static void executeHadoop(DMLTranslator dmlt, DMLProgram prog, DMLConfig conf, String dmlScriptStr, String[] allArgs) 
+	private static void executeHadoop(DMLTranslator dmlt, DMLProgram prog, DMLConfig conf, String dmlScriptStr, String[] allArgs, boolean parsePyDML) 
 		throws ParseException, IOException, LanguageException, HopsException, LopsException, DMLRuntimeException, DMLUnsupportedOperationException 
 	{	
 		LOG.debug("\n********************** OPTIMIZER *******************\n" + 
@@ -824,6 +825,11 @@ public class DMLScript
 			
 			//run execute (w/ exception handling to ensure proper shutdown)
 			ec = ExecutionContextFactory.createContext(rtprog);
+			if(parsePyDML) {
+				ec.setScriptType(ScriptType.PYDML);
+			} else {
+				ec.setScriptType(ScriptType.DML);
+			}
 			rtprog.execute( ec );  
 			
 		}

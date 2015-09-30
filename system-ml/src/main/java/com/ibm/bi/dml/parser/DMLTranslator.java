@@ -268,6 +268,7 @@ public class DMLTranslator
 	{
 		//apply hop rewrites (static rewrites)
 		ProgramRewriter rewriter = new ProgramRewriter(true, false);
+		rewriter.setScriptType(dmlp.getScriptType());
 		rewriter.rewriteProgramHopDAGs(dmlp);
 		resetHopsDAGVisitStatus(dmlp);
 		

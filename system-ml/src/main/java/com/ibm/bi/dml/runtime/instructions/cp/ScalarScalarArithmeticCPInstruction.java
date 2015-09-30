@@ -18,12 +18,14 @@
 package com.ibm.bi.dml.runtime.instructions.cp;
 
 import com.ibm.bi.dml.parser.Expression.ValueType;
+import com.ibm.bi.dml.parser.ScriptType;
 import com.ibm.bi.dml.runtime.DMLRuntimeException;
 import com.ibm.bi.dml.runtime.controlprogram.context.ExecutionContext;
 import com.ibm.bi.dml.runtime.functionobjects.Divide;
 import com.ibm.bi.dml.runtime.functionobjects.Power;
 import com.ibm.bi.dml.runtime.matrix.operators.BinaryOperator;
 import com.ibm.bi.dml.runtime.matrix.operators.Operator;
+import com.ibm.bi.dml.utils.PyDMLUtils;
 
 
 public class ScalarScalarArithmeticCPInstruction extends ArithmeticBinaryCPInstruction
@@ -55,6 +57,21 @@ public class ScalarScalarArithmeticCPInstruction extends ArithmeticBinaryCPInstr
 			//pre-check (for robustness regarding too long strings)
 			String val1 = so1.getStringValue();
 			String val2 = so2.getStringValue();
+			
+			// Handle PyDML boolean case (True/False)
+			ScriptType scriptType = ec.getScriptType();
+			if ((scriptType != null) && (scriptType == ScriptType.PYDML)) {
+				if (input1.getValueType() == ValueType.BOOLEAN) {
+					val1 = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(so1.getStringValue());
+				} else if (input2.getValueType() == ValueType.BOOLEAN) {
+					val2 = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(so2.getStringValue());
+				} else if (so1.getValueType() == ValueType.BOOLEAN) { // input1 valueType is a string but actually a boolean
+					val1 = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(so1.getStringValue());
+				} else if (so2.getValueType() == ValueType.BOOLEAN) { // input2 valueType is a string but actually a boolean
+					val2 = PyDMLUtils.convertBooleanStringToPyDMLBooleanString(so2.getStringValue());
+				}
+			}
+			
 			StringObject.checkMaxStringLength(val1.length() + val2.length());
 			
 			String rval = dop.fn.execute(val1, val2);
