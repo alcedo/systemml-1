@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -125,10 +126,16 @@ public class PydmlSyntacticValidator implements PydmlListener
 	private String _workingDir = ".";   //current working directory
 	private String _currentPath = null; //current file path
 	private HashMap<String,String> argVals = null;
+	private boolean mlContext = false;
 	
 	public PydmlSyntacticValidator(PydmlSyntacticValidatorHelper helper, String currentPath, HashMap<String,String> argVals) {
+		this(helper, currentPath, argVals, false);
+	}
+	
+	public PydmlSyntacticValidator(PydmlSyntacticValidatorHelper helper, String currentPath, HashMap<String,String> argVals, boolean mlContext) {
 		this.helper = helper;
 		this.argVals = argVals;
+		this.mlContext = mlContext;
 		
 		_currentPath = currentPath;
 	}
@@ -710,7 +717,37 @@ public class PydmlSyntacticValidator implements PydmlListener
 	
 	@Override
 	public void exitCommandlineParamExpression(CommandlineParamExpressionContext ctx) {
+		
 		String varName = ctx.getText().trim();
+		
+		// With MLContext, read/write data can be RDDs and DataFrames
+		if (mlContext && (varName.startsWith("$"))) {
+			RuleContext p = ctx.parent;
+			if (p != null) {
+				RuleContext pp = p.parent;
+				if (pp != null) {
+					RuleContext ppp = pp.parent;
+					if (ppp != null) {
+						if (ppp instanceof FunctionCallAssignmentStatementContext) {
+							FunctionCallAssignmentStatementContext funcCxt = (FunctionCallAssignmentStatementContext) ppp;
+							String fullyQualifiedFunctionName = funcCxt.name.getText();
+							String [] fnNames = fullyQualifiedFunctionName.split("\\.");
+							String functionName = "";
+							if(fnNames.length == 1) {
+								functionName = fnNames[0].trim();
+							} else if(fnNames.length == 2) {
+								functionName = fnNames[1].trim();
+							}
+							if ("load".equals(functionName) || "save".equals(functionName)) {
+								ctx.dataInfo.expr = getConstIdFromString("\" \"", ctx.start);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		fillExpressionInfoCommandLineParameters(varName, ctx.dataInfo, ctx.start);
 		if(ctx.dataInfo.expr == null) {
 			// Check if the parent is ifdef

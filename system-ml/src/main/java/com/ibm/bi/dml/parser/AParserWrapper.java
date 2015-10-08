@@ -28,6 +28,8 @@ import com.ibm.bi.dml.parser.python.PyDMLParserWrapper;
  */
 public abstract class AParserWrapper 
 {
+	private boolean mlContext; // Is invocation from MLContext?	
+	
 	/**
 	 * 
 	 * @param fileName
@@ -41,13 +43,13 @@ public abstract class AParserWrapper
 	
 	
 	/**
-	 * Factory method for creating instances of AParserWrapper, for
-	 * simplificy fused with the abstract class.
+	 * Factory method for creating instances of AParserWrapper.
 	 * 
-	 * @param pydml
+	 * @param pydml Is PyDML being parsed?
+	 * @param mlContext Is SystemML being invoked from MLContext? 
 	 * @return
 	 */
-	public static AParserWrapper createParser(boolean pydml)
+	public static AParserWrapper createParser(boolean pydml, boolean mlContext)
 	{
 		AParserWrapper ret = null;
 		
@@ -56,7 +58,27 @@ public abstract class AParserWrapper
 			ret = new PyDMLParserWrapper();
 		else
 			ret = new DMLParserWrapper();
-		
+		ret.mlContext = mlContext;
 		return ret;
 	}
+	
+	/**
+	 * Create a DML or PyDML parser wrapper that is not invoked from MLContext
+	 * 
+	 * @param pydml
+	 * @return
+	 */
+	public static AParserWrapper createParser(boolean pydml) {
+		return createParser(pydml, false);
+	}
+
+	/**
+	 * 
+	 * @return Whether or not SystemML is being invoked from MLContext
+	 */
+	public boolean isMlContext() {
+		return mlContext;
+	}
+	
+	
 }

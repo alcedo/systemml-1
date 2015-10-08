@@ -116,8 +116,7 @@ public class PyDMLParserWrapper extends AParserWrapper
 		}
 		
 		// Set the pipeline required for ANTLR parsing
-		PyDMLParserWrapper parser = new PyDMLParserWrapper();
-		prog = parser.doParse(fileName, dmlScript, argVals);
+		prog = doParse(fileName, dmlScript, argVals);
 		
 		if(prog == null) {
 			throw new ParseException("One or more errors found during parsing. (could not construct AST for file: " + fileName + "). Cannot proceed ahead.");
@@ -213,7 +212,7 @@ public class PyDMLParserWrapper extends AParserWrapper
 			// And also do syntactic validation
 			ParseTreeWalker walker = new ParseTreeWalker();
 			PydmlSyntacticValidatorHelper helper = new PydmlSyntacticValidatorHelper(errorListener);
-			PydmlSyntacticValidator validator = new PydmlSyntacticValidator(helper, fileName, argVals);
+			PydmlSyntacticValidator validator = new PydmlSyntacticValidator(helper, fileName, argVals, isMlContext());
 			walker.walk(validator, tree);
 			errorListener.popFileName();
 			if(errorListener.isAtleastOneError()) {

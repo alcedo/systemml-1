@@ -139,8 +139,7 @@ public class DMLParserWrapper extends AParserWrapper
 		}
 		
 		// Set the pipeline required for ANTLR parsing
-		DMLParserWrapper parser = new DMLParserWrapper();
-		prog = parser.doParse(fileName, dmlScript, argVals);
+		prog = doParse(fileName, dmlScript, argVals);
 		
 		if(prog == null) {
 			throw new ParseException("One or more errors found during parsing (could not construct AST for file: " + fileName + "). Cannot proceed ahead.");
@@ -238,7 +237,7 @@ public class DMLParserWrapper extends AParserWrapper
 			// And also do syntactic validation
 			org.antlr.v4.runtime.tree.ParseTreeWalker walker = new ParseTreeWalker();
 			DmlSyntacticValidatorHelper helper = new DmlSyntacticValidatorHelper(errorListener);
-			DmlSyntacticValidator validator = new DmlSyntacticValidator(helper, errorListener.peekFileName(), argVals);
+			DmlSyntacticValidator validator = new DmlSyntacticValidator(helper, errorListener.peekFileName(), argVals, isMlContext());
 			walker.walk(validator, tree);
 			errorListener.popFileName();
 			if(errorListener.isAtleastOneError()) {

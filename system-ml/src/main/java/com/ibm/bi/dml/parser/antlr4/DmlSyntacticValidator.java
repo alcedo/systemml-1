@@ -24,18 +24,49 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.ibm.bi.dml.parser.AssignmentStatement;
+import com.ibm.bi.dml.parser.BinaryExpression;
+import com.ibm.bi.dml.parser.BooleanExpression;
+import com.ibm.bi.dml.parser.BooleanIdentifier;
+import com.ibm.bi.dml.parser.BuiltinFunctionExpression;
 import com.ibm.bi.dml.parser.ConditionalPredicate;
+import com.ibm.bi.dml.parser.ConstIdentifier;
 import com.ibm.bi.dml.parser.DMLProgram;
+import com.ibm.bi.dml.parser.DataExpression;
 import com.ibm.bi.dml.parser.DataIdentifier;
 import com.ibm.bi.dml.parser.DoubleIdentifier;
 import com.ibm.bi.dml.parser.Expression;
 import com.ibm.bi.dml.parser.Expression.DataOp;
 import com.ibm.bi.dml.parser.Expression.DataType;
 import com.ibm.bi.dml.parser.Expression.ValueType;
+import com.ibm.bi.dml.parser.ExternalFunctionStatement;
+import com.ibm.bi.dml.parser.ForStatement;
+import com.ibm.bi.dml.parser.FunctionCallIdentifier;
+import com.ibm.bi.dml.parser.FunctionStatement;
+import com.ibm.bi.dml.parser.IfStatement;
+import com.ibm.bi.dml.parser.ImportStatement;
+import com.ibm.bi.dml.parser.IndexedIdentifier;
+import com.ibm.bi.dml.parser.IntIdentifier;
+import com.ibm.bi.dml.parser.IterablePredicate;
+import com.ibm.bi.dml.parser.LanguageException;
+import com.ibm.bi.dml.parser.MultiAssignmentStatement;
+import com.ibm.bi.dml.parser.OutputStatement;
+import com.ibm.bi.dml.parser.ParForStatement;
+import com.ibm.bi.dml.parser.ParameterExpression;
+import com.ibm.bi.dml.parser.ParameterizedBuiltinFunctionExpression;
+import com.ibm.bi.dml.parser.ParseException;
+import com.ibm.bi.dml.parser.PathStatement;
+import com.ibm.bi.dml.parser.PrintStatement;
+import com.ibm.bi.dml.parser.RelationalExpression;
+import com.ibm.bi.dml.parser.Statement;
+import com.ibm.bi.dml.parser.StatementBlock;
+import com.ibm.bi.dml.parser.StringIdentifier;
+import com.ibm.bi.dml.parser.WhileStatement;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.AddSubExpressionContext;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.AssignmentStatementContext;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.AtomicExpressionContext;
@@ -84,36 +115,6 @@ import com.ibm.bi.dml.parser.antlr4.DmlParser.TypedArgNoAssignContext;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.UnaryExpressionContext;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.ValueTypeContext;
 import com.ibm.bi.dml.parser.antlr4.DmlParser.WhileStatementContext;
-import com.ibm.bi.dml.parser.AssignmentStatement;
-import com.ibm.bi.dml.parser.BinaryExpression;
-import com.ibm.bi.dml.parser.BooleanExpression;
-import com.ibm.bi.dml.parser.BooleanIdentifier;
-import com.ibm.bi.dml.parser.BuiltinFunctionExpression;
-import com.ibm.bi.dml.parser.ConstIdentifier;
-import com.ibm.bi.dml.parser.DataExpression;
-import com.ibm.bi.dml.parser.ExternalFunctionStatement;
-import com.ibm.bi.dml.parser.ForStatement;
-import com.ibm.bi.dml.parser.FunctionCallIdentifier;
-import com.ibm.bi.dml.parser.FunctionStatement;
-import com.ibm.bi.dml.parser.IfStatement;
-import com.ibm.bi.dml.parser.ImportStatement;
-import com.ibm.bi.dml.parser.IndexedIdentifier;
-import com.ibm.bi.dml.parser.IntIdentifier;
-import com.ibm.bi.dml.parser.IterablePredicate;
-import com.ibm.bi.dml.parser.LanguageException;
-import com.ibm.bi.dml.parser.MultiAssignmentStatement;
-import com.ibm.bi.dml.parser.OutputStatement;
-import com.ibm.bi.dml.parser.ParForStatement;
-import com.ibm.bi.dml.parser.ParameterExpression;
-import com.ibm.bi.dml.parser.ParameterizedBuiltinFunctionExpression;
-import com.ibm.bi.dml.parser.ParseException;
-import com.ibm.bi.dml.parser.PathStatement;
-import com.ibm.bi.dml.parser.PrintStatement;
-import com.ibm.bi.dml.parser.RelationalExpression;
-import com.ibm.bi.dml.parser.Statement;
-import com.ibm.bi.dml.parser.StatementBlock;
-import com.ibm.bi.dml.parser.StringIdentifier;
-import com.ibm.bi.dml.parser.WhileStatement;
 
 public class DmlSyntacticValidator implements DmlListener
 {	
@@ -122,10 +123,16 @@ public class DmlSyntacticValidator implements DmlListener
 	private String _workingDir = ".";   //current working directory 
 	private String _currentPath = null; //current file path
 	private HashMap<String,String> argVals = null;
+	private boolean mlContext = false;
 	
 	public DmlSyntacticValidator(DmlSyntacticValidatorHelper helper, String currentPath, HashMap<String,String> argVals) {
+		this(helper, currentPath, argVals, false);
+	}
+
+	public DmlSyntacticValidator(DmlSyntacticValidatorHelper helper, String currentPath, HashMap<String,String> argVals, boolean mlContext) {
 		this.helper = helper;
 		this.argVals = argVals;
+		this.mlContext = mlContext;
 		
 		_currentPath = currentPath;
 	}
@@ -687,7 +694,38 @@ public class DmlSyntacticValidator implements DmlListener
 	
 	@Override
 	public void exitCommandlineParamExpression(CommandlineParamExpressionContext ctx) {
+
 		String varName = ctx.getText().trim();
+		
+		// With MLContext, read/write data can be RDDs and DataFrames
+		if (mlContext && (varName.startsWith("$"))) {
+			RuleContext p = ctx.parent;
+			if (p != null) {
+				RuleContext pp = p.parent;
+				if (pp != null) {
+					RuleContext ppp = pp.parent;
+					if (ppp != null) {
+						if (ppp instanceof FunctionCallAssignmentStatementContext) {
+							FunctionCallAssignmentStatementContext funcCxt = (FunctionCallAssignmentStatementContext) ppp;
+							String fullyQualifiedFunctionName = funcCxt.name.getText();
+							String [] fnNames = fullyQualifiedFunctionName.split("::");
+							String functionName = "";
+							if(fnNames.length == 1) {
+								functionName = fnNames[0].trim();
+							} else if(fnNames.length == 2) {
+								functionName = fnNames[1].trim();
+							}
+							if ("read".equals(functionName) || "write".equals(functionName)) {
+								ctx.dataInfo.expr = getConstIdFromString("\" \"", ctx.start);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+
 		fillExpressionInfoCommandLineParameters(varName, ctx.dataInfo, ctx.start);
 		if(ctx.dataInfo.expr == null) {
 			// Check if the parent is ifdef

@@ -1190,7 +1190,7 @@ public class MLContext {
 		_rtprog = null;
 		
 		//parsing
-		AParserWrapper parser = AParserWrapper.createParser(parsePyDML);
+		AParserWrapper parser = AParserWrapper.createParser(parsePyDML, true);
 		DMLProgram prog = parser.parse(dmlScriptFilePath, dmlScriptStr, argVals);
 		if(prog == null) {
 			throw new ParseException("Couldnot parse the file:" + dmlScriptFilePath);
