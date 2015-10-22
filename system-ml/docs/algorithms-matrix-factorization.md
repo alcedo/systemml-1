@@ -26,14 +26,14 @@ top-$K$ (for a given value of $K$) principle components.
 ### Usage
 
     hadoop jar SystemML.jar -f PCA.dml
-                            -nvargs INPUT=file 
-                                    K=int
-                                    CENTER=int
-                                    SCALE=int
-                                    PROJDATA=int 
-                                    OFMT=format 
-                                    MODEL=file 
-                                    OUTPUT=file
+                            -nvargs INPUT=<file>
+                                    K=<int>
+                                    CENTER=[int]
+                                    SCALE=[int]
+                                    PROJDATA=<int>
+                                    OFMT=[format]
+                                    MODEL=<file>
+                                    OUTPUT=<file>
 
 
 #### Arguments
@@ -70,23 +70,23 @@ SystemML Language Reference for details.
 #### Examples
 
     hadoop jar SystemML.jar -f PCA.dml 
-                            -nvargs INPUT=/user/ml/input.mtx 
-                            K=10
-                            CENTER=1 
-                            SCALE=1O
-                            FMT=csv 
-                            PROJDATA=1
-                            OUTPUT=/user/ml/pca_output/
-
-    hadoop jar SystemML.jar -f PCA.dml 
-                            -nvargs INPUT=/user/ml/test_input.mtx 
-                                    K=10 
+                            -nvargs INPUT=/user/ml/input.mtx
+                                    K=10
                                     CENTER=1
-                                    SCALE=1O 
-                                    FMT=csv 
+                                    SCALE=1O
+                                    FMT=csv
                                     PROJDATA=1
-                                    MODEL=/user/ml/pca_output/ 
-                                    OUTPUT=/user/ml/test_output.mtx  
+                                    OUTPUT=/user/ml/pca_output/
+
+    hadoop jar SystemML.jar -f PCA.dml
+                            -nvargs INPUT=/user/ml/test_input.mtx
+                                    K=10
+                                    CENTER=1
+                                    SCALE=1O
+                                    FMT=csv
+                                    PROJDATA=1
+                                    MODEL=/user/ml/pca_output/
+                                    OUTPUT=/user/ml/test_output.mtx
 
 
 
@@ -165,38 +165,38 @@ problems.
 **ALS**:
 
     hadoop jar SystemML.jar -f ALS.dml
-                            -nvargs V=file
-                                    L=file
-                                    R=file
-                                    rank=int
-                                    reg=L2|wL2
-                                    lambda=double
-                                    maxi=int
-                                    check=boolean
-                                    thr=double
-                                    fmt=format
+                            -nvargs V=<file>
+                                    L=<file>
+                                    R=<file>
+                                    rank=[int]
+                                    reg=[L2|wL2]
+                                    lambda=[double]
+                                    maxi=[int]
+                                    check=[boolean]
+                                    thr=[double]
+                                    fmt=[format]
 
 **ALS Prediction**:
 
     hadoop jar SystemML.jar -f ALS_predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    L=file
-                                    R=file
-                                    Vrows=int
-                                    Vcols=int
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    L=<file>
+                                    R=<file>
+                                    Vrows=<int>
+                                    Vcols=<int>
+                                    fmt=[format]
 
 **ALS Top-K Prediction**:
 
     hadoop jar SystemML.jar -f ALS_topk_predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    L=file
-                                    R=file
-                                    V=file
-                                    K=int
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    L=<file>
+                                    R=<file>
+                                    V=<file>
+                                    K=[int]
+                                    fmt=[format]
 
 
 ### Arguments - ALS
@@ -234,8 +234,6 @@ SystemML Language Reference for details.
 
 ### Arguments - ALS Prediction/Top-K Prediction
 
-**V**: Location (on HDFS) to read the user-item matrix $V$
-
 **X**: Location (on HDFS) to read the input matrix $X$ with following format:
 
   * for `ALS_predict.dml`: a 2-column matrix that contains
@@ -259,6 +257,8 @@ format:
 **L**: Location (on HDFS) to read the left (user) factor matrix $L$
 
 **R**: Location (on HDFS) to write the right (item) factor matrix $R$
+
+**V**: Location (on HDFS) to read the user-item matrix $V$
 
 **Vrows**: Number of rows of $V$ (i.e., number of users)
 

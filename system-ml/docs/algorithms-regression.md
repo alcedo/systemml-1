@@ -62,28 +62,28 @@ efficient when the number of features $m$ is relatively small
 **Linear Regression - Direct Solve**:
 
     hadoop jar SystemML.jar -f LinearRegDS.dml
-                            -nvargs X=file
-                                    Y=file
-                                    B=file
-                                    O=file
-                                    icpt=int
-                                    reg=double
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    O=[file]
+                                    icpt=[int]
+                                    reg=[double]
+                                    fmt=[format]
 
 
 **Linear Regression - Conjugate Gradient**:
 
     hadoop jar SystemML.jar -f LinearRegCG.dml
-                            -nvargs X=file
-                                    Y=file
-                                    B=file
-                                    O=file
-                                    Log=file
-                                    icpt=int
-                                    reg=double
-                                    tol=double
-                                    maxi=int
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    O=[file]
+                                    Log=[file]
+                                    icpt=[int]
+                                    reg=[double]
+                                    tol=[double]
+                                    maxi=[int]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -369,14 +369,14 @@ lowest AIC is computed.
 ### Usage
 
     hadoop jar SystemML.jar -f StepLinearRegDS.dml
-                            -nvargs X=file
-                                    Y=file
-                                    B=file
-                                    S=file
-                                    O=file
-                                    icpt=int
-                                    thr=double
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    S=[file]
+                                    O=[file]
+                                    icpt=[int]
+                                    thr=[double]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -522,23 +522,23 @@ distributions and link functions, see below for details.
 ### Usage
 
     hadoop jar SystemML.jar -f GLM.dml
-                            -nvargs X=file 
-                                    Y=file 
-                                    B=file 
-                                    fmt=format 
-                                    O=file 
-                                    Log=file 
-                                    dfam=int 
-                                    vpow=double 
-                                    link=int 
-                                    lpow=double 
-                                    yneg=double 
-                                    icpt=int 
-                                    reg=double 
-                                    tol=double 
-                                    disp=double 
-                                    moi=int 
-                                    mii=int
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    fmt=[format]
+                                    O=[file]
+                                    Log=[file]
+                                    dfam=[int]
+                                    vpow=[double]
+                                    link=[int]
+                                    lpow=[double]
+                                    yneg=[double]
+                                    icpt=[int]
+                                    reg=[double]
+                                    tol=[double]
+                                    disp=[double]
+                                    moi=[int]
+                                    mii=[int]
 
 
 ### Arguments
@@ -945,20 +945,20 @@ distribution family is supported (see below for details).
 ### Usage
 
     hadoop jar SystemML.jar -f StepGLM.dml
-                            -nvargs X=file
-                                    Y=file
-                                    B=file
-                                    S=file
-                                    O=file
-                                    link=int
-                                    yneg=double
-                                    icpt=int
-                                    tol=double
-                                    disp=double
-                                    moi=int
-                                    mii=int
-                                    thr=double
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    S=[file]
+                                    O=[file]
+                                    link=[int]
+                                    yneg=[double]
+                                    icpt=[int]
+                                    tol=[double]
+                                    disp=[double]
+                                    moi=[int]
+                                    mii=[int]
+                                    thr=[double]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -1146,17 +1146,17 @@ this step outside the scope of `GLM-predict.dml` for now.
 ### Usage
 
     hadoop jar SystemML.jar -f GLM-predict.dml
-                            -nvargs X=file 
-                                    Y=file 
-                                    B=file 
-                                    M=file 
-                                    O=file 
-                                    dfam=int 
-                                    vpow=double 
-                                    link=int 
-                                    lpow=double 
-                                    disp=double  
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    B=<file>
+                                    M=[file]
+                                    O=[file]
+                                    dfam=[int]
+                                    vpow=[double]
+                                    link=[int]
+                                    lpow=[double]
+                                    disp=[double]
+                                    fmt=[format]
 
 
 ### Arguments

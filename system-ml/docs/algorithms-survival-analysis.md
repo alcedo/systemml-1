@@ -24,18 +24,18 @@ censored and uncensored survival times.
 ### Usage
 
     hadoop jar SystemML.jar -f KM.dml
-                            -nvargs X=file
-                                    TE=file
-                                    GI=file
-                                    SI=file
-                                    O=file
-                                    M=file
-                                    T=file
-                                    alpha=double
-                                    etype=greenwood|peto
-                                    ctype=plain|log|log-log
-                                    ttype=none|log-rank|wilcoxon
-                                    fmt=format
+                            -nvargs X=<file>
+                                    TE=<file>
+                                    GI=<file>
+                                    SI=<file>
+                                    O=<file>
+                                    M=<file>
+                                    T=<file>
+                                    alpha=[double]
+                                    etype=[greenwood|peto]
+                                    ctype=[plain|log|log-log]
+                                    ttype=[none|log-rank|wilcoxon]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -351,34 +351,34 @@ may be categorical (ordinal or nominal) as well as continuous-valued.
 **Cox**:
 
     hadoop jar SystemML.jar -f Cox.dml
-                            -nvargs X=file
-                                    TE=file
-                                    F=file
-                                    R=file
-                                    M=file
-                                    S=file
-                                    T=file
-                                    COV=file
-                                    RT=file
-                                    XO=file
-                                    MF=file
-                                    alpha=double
-                                    tol=double
-                                    moi=int
-                                    mii=int
-                                    fmt=format
+                            -nvargs X=<file>
+                                    TE=<file>
+                                    F=<file>
+                                    R=[file]
+                                    M=<file>
+                                    S=[file]
+                                    T=[file]
+                                    COV=<file>
+                                    RT=<file>
+                                    XO=<file>
+                                    MF=<file>
+                                    alpha=[double]
+                                    tol=[double]
+                                    moi=[int]
+                                    mii=[int]
+                                    fmt=[format]
 
 **Cox Prediction**:
 
     hadoop jar SystemML.jar -f Cox-predict.dml
-                            -nvargs X=file
-                                    RT=file
-                                    M=file
-                                    Y=file
-                                    COV=file
-                                    MF=file
-                                    P=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    RT=<file>
+                                    M=<file>
+                                    Y=<file>
+                                    COV=<file>
+                                    MF=<file>
+                                    P=<file>
+                                    fmt=[format]
 
 ### Arguments - Cox Model Fitting/Prediction
 
@@ -419,19 +419,19 @@ log-likelihood, AIC, Rsquare (Cox & Snell), and maximum possible Rsquare
 test, Wald test, and Score (log-rank) test of the fitted model
 
 **COV**: Location (on HDFS) to store the variance-covariance matrix of
-$\beta_j$s; note that parameter `COV` needs to provided as
+$\beta_j$s; note that parameter `COV` needs to be provided as
 input to prediction.
 
 **RT**: Location (on HDFS) to store matrix $RT$ containing the order-preserving
 recoded timestamps from $X$; note that parameter `RT` needs
-to provided as input for prediction.
+to be provided as input for prediction.
 
 **XO**: Location (on HDFS) to store the input matrix $X$ ordered by the
-timestamps; note that parameter `XO` needs to provided as
+timestamps; note that parameter `XO` needs to be provided as
 input for prediction.
 
 **MF**: Location (on HDFS) to store column indices of $X$ excluding the baseline
-factors if available; note that parameter `MF` needs to
+factors if available; note that parameter `MF` needs to be
 provided as input for prediction.
 
 **P**: Location (on HDFS) to store matrix $P$ containing the results of

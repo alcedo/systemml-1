@@ -109,16 +109,16 @@ Eqs. (1) and (2).
 ### Usage
 
     hadoop jar SystemML.jar -f MultiLogReg.dml
-                            -nvargs X=file
-                                    Y=file
-                                    B=file
-                                    Log=file
-                                    icpt=int
-                                    reg=double
-                                    tol=double
-                                    moi=int
-                                    mii=int
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    B=<file>
+                                    Log=[file]
+                                    icpt=[int]
+                                    reg=[double]
+                                    tol=[double]
+                                    moi=[int]
+                                    mii=[int]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -330,27 +330,27 @@ support vector machine (`y` with domain size `2`).
 **Binary-Class Support Vector Machines**:
 
     hadoop jar SystemML.jar -f l2-svm.dml
-                            -nvargs X=file
-                                    Y=file
-                                    icpt=int
-                                    tol=double
-                                    reg=double
-                                    maxiter=int
-                                    model=file
-                                    Log=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    icpt=[int]
+                                    tol=[double]
+                                    reg=[double]
+                                    maxiter=[int]
+                                    model=<file>
+                                    Log=<file>
+                                    fmt=[format]
 
 **Binary-Class Support Vector Machines Prediction**:
 
     hadoop jar SystemML.jar -f l2-svm-predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    icpt=int
-                                    model=file
-                                    scores=file
-                                    accuracy=file
-                                    confusion=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    icpt=[int]
+                                    model=<file>
+                                    scores=[file]
+                                    accuracy=[file]
+                                    confusion=[file]
+                                    fmt=[format]
 
 
 #### Arguments
@@ -482,27 +482,27 @@ class labels.
 **Multi-Class Support Vector Machines**:
 
     hadoop jar SystemML.jar -f m-svm.dml
-                            -nvargs X=file
-                                    Y=file
-                                    icpt=int
-                                    tol=double
-                                    reg=double
-                                    maxiter=int
-                                    model=file
-                                    Log=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    icpt=[int]
+                                    tol=[double]
+                                    reg=[double]
+                                    maxiter=[int]
+                                    model=<file>
+                                    Log=<file>
+                                    fmt=[format]
 
 **Multi-Class Support Vector Machines Prediction**:
 
     hadoop jar SystemML.jar -f m-svm-predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    icpt=int
-                                    model=file
-                                    scores=file
-                                    accuracy=file
-                                    confusion=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    icpt=[int]
+                                    model=<file>
+                                    scores=[file]
+                                    accuracy=[file]
+                                    confusion=[file]
+                                    fmt=[format]
 
 
 #### Arguments
@@ -637,25 +637,25 @@ applicable when all features are counts of categorical values.
 **Naive Bayes**:
 
     hadoop jar SystemML.jar -f naive-bayes.dml
-                            -nvargs X=file
-                                    Y=file
-                                    laplace=double
-                                    prior=file
-                                    conditionals=file
-                                    accuracy=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    laplace=[double]
+                                    prior=<file>
+                                    conditionals=<file>
+                                    accuracy=<file>
+                                    fmt=[format]
 
 **Naive Bayes Prediction**:
 
     hadoop jar SystemML.jar -f naive-bayes-predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    prior=file
-                                    conditionals=file
-                                    fmt=format
-                                    accuracy=file
-                                    confusion=file
-                                    probabilities=file
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    prior=<file>
+                                    conditionals=<file>
+                                    fmt=[format]
+                                    accuracy=[file]
+                                    confusion=[file]
+                                    probabilities=[file]
 
 
 ### Arguments
@@ -782,31 +782,31 @@ implementation is well-suited to handle large-scale data and builds a
 **Decision Tree**:
 
     hadoop jar SystemML.jar -f decision-tree.dml
-                            -nvargs X=file
-                                    Y=file
-                                    R=file
-                                    M=file
-                                    bins=int
-                                    depth=int
-                                    num_leaf=int
-                                    num_samples=int
-                                    impurity=Gini|entropy
-                                    O=file
-                                    S_map=file
-                                    C_map=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    R=[file]
+                                    M=<file>
+                                    bins=[int]
+                                    depth=[int]
+                                    num_leaf=[int]
+                                    num_samples=[int]
+                                    impurity=[Gini|entropy]
+                                    O=[file]
+                                    S_map=[file]
+                                    C_map=[file]
+                                    fmt=[format]
 
 **Decision Tree Prediction**:
 
     hadoop jar SystemML.jar -f decision-tree-predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    R=file
-                                    M=file
-                                    P=file
-                                    A=file
-                                    CM=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    R=[file]
+                                    M=<file>
+                                    P=<file>
+                                    A=[file]
+                                    CM=[file]
+                                    fmt=[format]
 
 
 ### Arguments
@@ -1097,36 +1097,36 @@ for classification in parallel.
 **Random Forest**:
 
     hadoop jar SystemML.jar -f random-forest.dml
-                            -nvargs X=file
-                                    Y=file
-                                    R=file
-                                    M=file
-                                    bins=int
-                                    depth=int
-                                    num_leaf=int
-                                    num_samples=int
-                                    num_trees=int
-                                    subsamp_rate=double
-                                    feature_subset=double
-                                    impurity=Gini|entropy
-                                    C=file
-                                    S_map=file
-                                    C_map=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=<file>
+                                    R=[file]
+                                    M=<file>
+                                    bins=[int]
+                                    depth=[int]
+                                    num_leaf=[int]
+                                    num_samples=[int]
+                                    num_trees=[int]
+                                    subsamp_rate=[double]
+                                    feature_subset=[double]
+                                    impurity=[Gini|entropy]
+                                    C=[file]
+                                    S_map=[file]
+                                    C_map=[file]
+                                    fmt=[format]
 
 **Random Forest Prediction**:
 
     hadoop jar SystemML.jar -f random-forest-predict.dml
-                            -nvargs X=file
-                                    Y=file
-                                    R=file
-                                    M=file
-                                    C=file
-                                    P=file
-                                    A=file
-                                    OOB=file
-                                    CM=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Y=[file]
+                                    R=[file]
+                                    M=<file>
+                                    C=[file]
+                                    P=<file>
+                                    A=[file]
+                                    OOB=[file]
+                                    CM=[file]
+                                    fmt=[format]
 
 
 ### Arguments

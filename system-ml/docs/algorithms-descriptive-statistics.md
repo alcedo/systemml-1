@@ -100,9 +100,9 @@ to compute the mean of a categorical attribute like ‘Hair Color’.
 ### Usage
 
     hadoop jar SystemML.jar -f Univar-Stats.dml
-                            -nvargs X=file 
-                                    TYPES=file
-                                    STATS=file
+                            -nvargs X=<file> 
+                                    TYPES=<file>
+                                    STATS=<file>
 
 
 ### Arguments
@@ -525,12 +525,12 @@ attributes like ‘Hair Color’.
 ### Usage
 
     hadoop jar SystemML.jar -f bivar-stats.dml
-                            -nvargs X=file
-                                    index1=file
-                                    index2=file
-                                    types1=file
-                                    types2=file
-                                    OUTDIR=directory
+                            -nvargs X=<file>
+                                    index1=<file>
+                                    index2=<file>
+                                    types1=<file>
+                                    types2=<file>
+                                    OUTDIR=<directory>
 
 
 ### Arguments
@@ -1047,14 +1047,14 @@ becomes reversed and amplified (from $+0.1$ to $-0.5$) if we ignore the months.
 ### Usage
 
     hadoop jar SystemML.jar -f stratstats.dml
-                            -nvargs X=file
-                                    Xcid=file
-                                    Y=file
-                                    Ycid=file
-                                    S=file
-                                    Scid=int
-                                    O=file
-                                    fmt=format
+                            -nvargs X=<file>
+                                    Xcid=[file]
+                                    Y=[file]
+                                    Ycid=[file]
+                                    S=[file]
+                                    Scid=[int]
+                                    O=<file>
+                                    fmt=[format]
 
 
 ### Arguments

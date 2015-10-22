@@ -96,27 +96,27 @@ apart is a “false negative” etc.
 **K-Means**:
 
     hadoop jar SystemML.jar -f Kmeans.dml
-                            -nvargs X=file 
-                                    C=file 
-                                    k=int 
-                                    runs=int 
-                                    maxi=int 
-                                    tol=double 
-                                    samp=int 
-                                    isY=int 
-                                    Y=file 
-                                    fmt=format 
-                                    verb=int
+                            -nvargs X=<file>
+                                    C=[file]
+                                    k=<int>
+                                    runs=[int]
+                                    maxi=[int]
+                                    tol=[double]
+                                    samp=[int]
+                                    isY=[int]
+                                    Y=[file]
+                                    fmt=[format]
+                                    verb=[int]
 
 **K-Means Prediction**:
 
     hadoop jar SystemML.jar -f Kmeans-predict.dml
-                            -nvargs X=file 
-                                    C=file 
-                                    spY=file 
-                                    prY=file 
-                                    fmt=format 
-                                    O=file
+                            -nvargs X=[file]
+                                    C=[file]
+                                    spY=[file]
+                                    prY=[file]
+                                    fmt=[format]
+                                    O=[file]
 
 
 
