@@ -19,6 +19,7 @@ For more in depth information, please refer to the
 [Algorithms Reference](algorithms-reference.html) and the
 [DML Language Reference](dml-language-reference.html).
 
+Binary releases of SystemML are available at [https://github.com/SparkTC/systemml/releases](https://github.com/SparkTC/systemml/releases).
 
 <br/>
 
